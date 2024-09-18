@@ -1,5 +1,9 @@
 Version 2 of our Alura Fokus.
 
+############################
+NOT FINISHED YET
+############################
+
 With forms validation, new inputs, features, local storage, interactive interfaces and more
 Using only HTML, CSS and JS
 
