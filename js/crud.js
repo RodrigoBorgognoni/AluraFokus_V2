@@ -1,7 +1,10 @@
 const addTaskBtn = document.querySelector('.app__button--add-task');
 const formAddTask = document.querySelector('.app__form-add-task');
+const formCancelTask = document.querySelector('.app__form-footer__button--cancel');
 const textArea = document.querySelector('.app__form-textarea');
 const exibirTarefa = document.querySelector('.app__section-task-list');
+const removeTarefa = document.getElementById('btn-remover-concluidas');
+const removeTodas = document.getElementById('btn-remover-todas');
 
 //array de tarefas do user
 //JSON.parse() transforma a string do localStorage em um objeto tasks (caso exista já no início)
@@ -11,9 +14,12 @@ const tasks = JSON.parse(localStorage.getItem('Tarefas')) || [];
 //adiciona e retira classe hidden do text area
 addTaskBtn.addEventListener('click', () => {
     formAddTask.classList.toggle('hidden');
+
+    formCancelTask.addEventListener('click', cancelaTarefa);
 });
 
 formAddTask.addEventListener('submit', (event) => {
+    debugger;
     //evita o refresh padrão ao clicar no button salvar
     event.preventDefault();
 
@@ -37,20 +43,16 @@ formAddTask.addEventListener('submit', (event) => {
 });
 
 //função para criar tarefa no layout pré-estabelecido
-
 //para cada tarefa inserida no array, cria uma tarefa para exibir
 tasks.forEach((tarefa) => {
     const elementoTarefa = criarElementoTarefa(tarefa);
     exibirTarefa.append(elementoTarefa);
 });
 
-function attTarefas() {
-    //JSON.stringify transforma o array tasks em ums string
-    //desse modo o método não retorna [object Object]
-    //localStorage trabalha apenas com string
-    localStorage.setItem('Tarefas', JSON.stringify(tasks));
-}
-
+/*========================
+INICIO criarElementoTarefa
+========================*/
+//função para criar a tarefa no layout desejado (lista, paragrafo, classes)
 function criarElementoTarefa(tarefa) {
     const lista = document.createElement('li');
     lista.classList.add('app__section-task-list-item');
@@ -70,12 +72,12 @@ function criarElementoTarefa(tarefa) {
     const botao = document.createElement('button');
     botao.classList.add('app_button-edit');
 
+    //botão de editar tarefas
     botao.onclick = () => {
         const novaDesc = prompt('Qual o novo nome da tarefa?');
-        if (novaDesc != '' || null) {
+        if (novaDesc) {
             paragrafro.textContent = novaDesc;
             tarefa.descricao = novaDesc;
-
             attTarefas();
         } else return;
     };
@@ -93,3 +95,19 @@ function criarElementoTarefa(tarefa) {
     //cria o elemento lista(e seus appends) e retorna
     return lista;
 }
+/*========================
+FIM criarElementoTarefa
+========================*/
+
+//função para atualizar tarefas no localStorage
+function attTarefas() {
+    //JSON.stringify transforma o array tasks em ums string
+    //desse modo o método não retorna [object Object]
+    //localStorage trabalha apenas com string
+    localStorage.setItem('Tarefas', JSON.stringify(tasks));
+}
+
+const cancelaTarefa = () => {
+    textArea.value = '';
+    formAddTask.classList.add('hidden');
+};
