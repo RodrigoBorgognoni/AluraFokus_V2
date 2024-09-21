@@ -1,15 +1,17 @@
 const addTaskBtn = document.querySelector('.app__button--add-task');
 const formAddTask = document.querySelector('.app__form-add-task');
 const formCancelTask = document.querySelector('.app__form-footer__button--cancel');
-const textArea = document.querySelector('.app__form-textarea');
-const exibirTarefa = document.querySelector('.app__section-task-list');
 const removeTarefa = document.getElementById('btn-remover-concluidas');
 const removeTodas = document.getElementById('btn-remover-todas');
+const textArea = document.querySelector('.app__form-textarea');
+const exibirTarefa = document.querySelector('.app__section-task-list');
+const descTarefaAndamento = document.querySelector('.app__section-active-task-description');
 
 //array de tarefas do user
 //JSON.parse() transforma a string do localStorage em um objeto tasks (caso exista já no início)
 //caso não existam tarefas, retorna array vazio
 const tasks = JSON.parse(localStorage.getItem('Tarefas')) || [];
+let tarefaSelecionada = null;
 
 //adiciona e retira classe hidden do text area
 addTaskBtn.addEventListener('click', () => {
@@ -19,7 +21,6 @@ addTaskBtn.addEventListener('click', () => {
 });
 
 formAddTask.addEventListener('submit', (event) => {
-    debugger;
     //evita o refresh padrão ao clicar no button salvar
     event.preventDefault();
 
@@ -91,6 +92,20 @@ function criarElementoTarefa(tarefa) {
     lista.append(svg);
     lista.append(paragrafro);
     lista.append(botao);
+
+    lista.onclick = () => {
+        document.querySelectorAll('.app__section-task-list-item-active').forEach((elemento) => {
+            elemento.classList.remove('app__section-task-list-item-active');
+        });
+        if (tarefaSelecionada == tarefa) {
+            descTarefaAndamento.textContent = '';
+            tarefaSelecionada = null;
+            return;
+        }
+        tarefaSelecionada = tarefa;
+        descTarefaAndamento.textContent = tarefa.descricao;
+        lista.classList.add('app__section-task-list-item-active');
+    };
 
     //cria o elemento lista(e seus appends) e retorna
     return lista;
