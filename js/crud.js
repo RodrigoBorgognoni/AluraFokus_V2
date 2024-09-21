@@ -12,6 +12,7 @@ const descTarefaAndamento = document.querySelector('.app__section-active-task-de
 //caso não existam tarefas, retorna array vazio
 const tasks = JSON.parse(localStorage.getItem('Tarefas')) || [];
 let tarefaSelecionada = null;
+let listaTarefaSelecionada = null;
 
 //adiciona e retira classe hidden do text area
 addTaskBtn.addEventListener('click', () => {
@@ -100,9 +101,11 @@ function criarElementoTarefa(tarefa) {
         if (tarefaSelecionada == tarefa) {
             descTarefaAndamento.textContent = '';
             tarefaSelecionada = null;
+            listaTarefaSelecionada = null;
             return;
         }
         tarefaSelecionada = tarefa;
+        listaTarefaSelecionada = lista;
         descTarefaAndamento.textContent = tarefa.descricao;
         lista.classList.add('app__section-task-list-item-active');
     };
@@ -126,3 +129,12 @@ const cancelaTarefa = () => {
     textArea.value = '';
     formAddTask.classList.add('hidden');
 };
+
+//listener para o evento Custom em main.js
+document.addEventListener('FocoFinalizado', () =>{
+    if(tarefaSelecionada && listaTarefaSelecionada){
+        listaTarefaSelecionada.classList.remove('app__section-task-list-item-active');
+        listaTarefaSelecionada.classList.add('app__section-task-list-item-complete');
+        listaTarefaSelecionada.querySelector('button').setAttribute('disabled','')
+    }
+});
