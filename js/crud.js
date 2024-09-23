@@ -1,8 +1,8 @@
-const addTaskBtn = document.querySelector('.app__button--add-task');
-const formAddTask = document.querySelector('.app__form-add-task');
-const formCancelTask = document.querySelector('.app__form-footer__button--cancel');
-const removeTarefa = document.getElementById('btn-remover-concluidas');
-const removeTodas = document.getElementById('btn-remover-todas');
+const BtnAddTask = document.querySelector('.app__button--add-task');
+const BtnFormAddTask = document.querySelector('.app__form-add-task');
+const BtnFormCancelTask = document.querySelector('.app__form-footer__button--cancel');
+const BtnRemoveTarefa = document.getElementById('btn-remover-concluidas');
+const BtnRemoveTodas = document.getElementById('btn-remover-todas');
 const textArea = document.querySelector('.app__form-textarea');
 //local de exibição de todas as tarefas
 const exibirTarefa = document.querySelector('.app__section-task-list');
@@ -12,20 +12,21 @@ const descTarefaAndamento = document.querySelector('.app__section-active-task-de
 //array de tarefas do user
 //JSON.parse() transforma a string do localStorage em um objeto tasks (caso exista já no início)
 //caso não existam tarefas, retorna array vazio
-const tasks = JSON.parse(localStorage.getItem('Tarefas')) || [];
+let tasks = JSON.parse(localStorage.getItem('Tarefas')) || [];
 //objeto da tarefa
 let tarefaSelecionada = null;
 //"texto" da tarefa
 let opcaoTarefaSelecionada = null;
 
-//adiciona e retira classe hidden do text area
-addTaskBtn.addEventListener('click', () => {
-    formAddTask.classList.toggle('hidden');
 
-    formCancelTask.addEventListener('click', cancelaTarefa);
+//adiciona e retira classe hidden do text area
+BtnAddTask.addEventListener('click', () => {
+    BtnFormAddTask.classList.toggle('hidden');
+
+    BtnFormCancelTask.addEventListener('click', cancelaTarefa);
 });
 
-formAddTask.addEventListener('submit', (event) => {
+BtnFormAddTask.addEventListener('submit', (event) => {
     //evita o refresh padrão ao clicar no button salvar
     event.preventDefault();
 
@@ -45,7 +46,7 @@ formAddTask.addEventListener('submit', (event) => {
     attTarefas();
 
     textArea.value = '';
-    formAddTask.classList.add('hidden');
+    BtnFormAddTask.classList.add('hidden');
 });
 
 //função para criar tarefa no layout pré-estabelecido
@@ -55,6 +56,8 @@ tasks.forEach((tarefa) => {
     exibirTarefa.append(elementoTarefa);
 });
 
+BtnRemoveTarefa.onclick = () => removeTarefa(true);
+BtnRemoveTodas.onclick = () => removeTarefa(false);
 /*========================
 INICIO criarElementoTarefa
 ========================*/
@@ -127,7 +130,7 @@ function criarElementoTarefa(tarefa) {
 FIM criarElementoTarefa
 ========================*/
 
-//listener para o evento Custom em main.js
+//listener para o evento Custom em main.js para adicionar completed e disabled às tarefas finalizadas
 document.addEventListener('FocoFinalizado', () => {
     if (tarefaSelecionada && opcaoTarefaSelecionada) {
         opcaoTarefaSelecionada.classList.remove('app__section-task-list-item-active');
@@ -137,6 +140,7 @@ document.addEventListener('FocoFinalizado', () => {
         attTarefas();
     }
 });
+
 
 //função para atualizar tarefas no localStorage
 function attTarefas() {
@@ -148,5 +152,18 @@ function attTarefas() {
 
 const cancelaTarefa = () => {
     textArea.value = '';
-    formAddTask.classList.add('hidden');
+    BtnFormAddTask.classList.add('hidden');
 };
+
+const removeTarefa = (apenasCompletas) => {
+    //var = condição ? se verdadeiro : se falso
+    // tarefas concluídas passam apenasCompletas true, tarefas não concluidas passam false
+    //o que alterna a classe do seletor
+    const seletor = apenasCompletas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item';
+    document.querySelectorAll(seletor).forEach(elemento => {
+        elemento.remove();       
+    });
+    //se completo, filtra. Caso falso, envia array vazio
+    tasks = apenasCompletas ? tasks.filter(tarefa => !tarefa.completa) : [];
+    attTarefas();
+}
