@@ -3,6 +3,7 @@ const BtnFormAddTask = document.querySelector('.app__form-add-task');
 const BtnFormCancelTask = document.querySelector('.app__form-footer__button--cancel');
 const BtnRemoveTarefa = document.getElementById('btn-remover-concluidas');
 const BtnRemoveTodas = document.getElementById('btn-remover-todas');
+const BtnDeleteText = document.querySelector('.app__form-footer__button--delete');
 const textArea = document.querySelector('.app__form-textarea');
 //local de exibição de todas as tarefas
 const exibirTarefa = document.querySelector('.app__section-task-list');
@@ -49,15 +50,17 @@ BtnFormAddTask.addEventListener('submit', (event) => {
     BtnFormAddTask.classList.add('hidden');
 });
 
+BtnRemoveTarefa.onclick = () => removeTarefa(true);
+BtnRemoveTodas.onclick = () => removeTarefa(false);
+
+BtnDeleteText.addEventListener('click', () => {textArea.value = '';})
+
 //função para criar tarefa no layout pré-estabelecido
 //para cada tarefa inserida no array, cria uma tarefa para exibir
 tasks.forEach((tarefa) => {
     const elementoTarefa = criarElementoTarefa(tarefa);
     exibirTarefa.append(elementoTarefa);
 });
-
-BtnRemoveTarefa.onclick = () => removeTarefa(true);
-BtnRemoveTodas.onclick = () => removeTarefa(false);
 /*========================
 INICIO criarElementoTarefa
 ========================*/
@@ -166,4 +169,5 @@ const removeTarefa = (apenasCompletas) => {
     //se completo, filtra. Caso falso, envia array vazio
     tasks = apenasCompletas ? tasks.filter(tarefa => !tarefa.completa) : [];
     attTarefas();
+    descTarefaAndamento.textContent = '';
 }
